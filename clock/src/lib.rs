@@ -11,14 +11,16 @@ impl Clock {
         return Clock {
             hours: hours,
             minutes: minutes,
-        };
+        }
+        .sanitize_clock();
     }
 
     pub fn add_minutes(&self, minutes: i32) -> Self {
         return Clock {
-            hours: (self.hours + (self.minutes + minutes) / 60) % 24,
-            minutes: (self.minutes + minutes) % 60,
-        };
+            hours: self.hours,
+            minutes: self.minutes + minutes,
+        }
+        .sanitize_clock();
     }
 
     pub fn sanitize_clock(&self) -> Self {
@@ -49,14 +51,6 @@ impl fmt::Display for Clock {
 
 impl PartialEq for Clock {
     fn eq(&self, other: &Self) -> bool {
-        println!(
-            "{} - {} \n {} - {}",
-            self.sanitize_clock().hours,
-            other.sanitize_clock().hours,
-            self.sanitize_clock().minutes,
-            other.sanitize_clock().minutes
-        );
-        return self.sanitize_clock().hours == other.sanitize_clock().hours
-            && self.sanitize_clock().minutes == other.sanitize_clock().minutes;
+        return self.hours == other.hours && self.minutes == other.minutes;
     }
 }
