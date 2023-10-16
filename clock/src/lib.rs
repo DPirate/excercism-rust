@@ -16,29 +16,21 @@ impl Clock {
     }
 
     pub fn add_minutes(&self, minutes: i32) -> Self {
-        return Clock {
-            hours: self.hours,
-            minutes: self.minutes + minutes,
-        }
-        .sanitize_clock();
+        return Clock::new(self.hours, self.minutes + minutes);
     }
 
+    /**
+     * Sanitize the clock to ensure that the hours and minutes are within the range of 0-23 and 0-59 respectively.
+     * Clock constructor uses this method to sanitize the clock.
+     */
     pub fn sanitize_clock(&self) -> Self {
         let total_effective_minutes = self.minutes % 60;
         let hours_offset = if total_effective_minutes >= 0 { 0 } else { -1 };
         let total_effective_hours = (self.hours + self.minutes / 60) % 24 + hours_offset;
 
         return Clock {
-            hours: if total_effective_hours >= 0 {
-                total_effective_hours
-            } else {
-                24 + total_effective_hours
-            },
-            minutes: if total_effective_minutes >= 0 {
-                total_effective_minutes
-            } else {
-                60 + total_effective_minutes
-            },
+            hours: (24 + total_effective_hours) % 24, // 24 + total_effective_hours to handle negative hours
+            minutes: (60 + total_effective_minutes) % 60, // 60 + total_effective_minutes to handle negative minutes
         };
     }
 }
